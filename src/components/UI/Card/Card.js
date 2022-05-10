@@ -1,5 +1,5 @@
-import classes from './Card.module.css';
+import classes from "./Card.module.css";
 
-export const Card = ({children}) => {
-  return <div className={classes.card}>{children}</div>
-}
+export const Card = ({ children }) => {
+  return <div className={classes.card}>{children}</div>;
+};

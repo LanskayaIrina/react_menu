@@ -1,6 +1,6 @@
-import React from 'react';
-import {MealsSummary} from "./MealsSummary/MealsSummary";
-import {AvailableMeals} from "./AvailableMeals/AvailableMeals";
+import React from "react";
+import { MealsSummary } from "./MealsSummary/MealsSummary";
+import { AvailableMeals } from "./AvailableMeals/AvailableMeals";
 
 export const Meals = () => {
   return (
