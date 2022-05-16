@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import classes from "./AvailableMeals.module.css";
 import { Card } from "../../UI/Card/Card";
 import { MealItem } from "../MealItem/MealItem";
+import { useHttp } from "../../../hooks/useHttp";
 
 const DUMMY_MEALS = [
   {
@@ -32,22 +33,65 @@ const DUMMY_MEALS = [
 ];
 
 export const AvailableMeals = () => {
-  const availableList = DUMMY_MEALS.map((meal) => (
-    <MealItem
-      key={meal.id}
-      id={meal.id}
-      name={meal.name}
-      description={meal.description}
-      price={meal.price}
-      amount={meal.amount}
-    />
-  ));
+  const [meals, setMeals] = useState([]);
+
+  const { isLoading, error, sendRequest } = useHttp();
+
+  const transformToArr = (obj) => {
+    let arr = [];
+    for (const key in obj) {
+      //arr.push({ key, obj });
+      arr = [...arr, { id: key, ...obj[key] }];
+    }
+    setMeals(arr);
+  };
+  useEffect(() => {
+    sendRequest(
+      {
+        url: "https://flex-reality-default-rtdb.europe-west1.firebasedatabase.app/meals.json",
+      },
+      transformToArr
+    );
+  }, []);
+
+  let content;
+  let mealList;
+
+  if (isLoading) {
+    content = <section className={classes.mealsLoading}>Loading...</section>;
+  }
+
+  if (error) {
+    content = <section className={classes.mealsLoading}>{error}</section>;
+  }
+
+  if (!meals.length && !isLoading && !error) {
+    content = (
+      <section className={classes.mealsLoading}>No available meals</section>
+    );
+  }
+
+  if (meals.length) {
+    mealList = meals.map((meal) => (
+      <MealItem
+        key={meal.id}
+        id={meal.id}
+        name={meal.name}
+        description={meal.description}
+        price={meal.price}
+        amount={meal.amount}
+      />
+    ));
+  }
 
   return (
     <section className={classes.meals}>
-      <Card>
-        <ul>{availableList}</ul>
-      </Card>
+      {content}
+      {!!meals.length && (
+        <Card>
+          <ul>{mealList}</ul>
+        </Card>
+      )}
     </section>
   );
 };
